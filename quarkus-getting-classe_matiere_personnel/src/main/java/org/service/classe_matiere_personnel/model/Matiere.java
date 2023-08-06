@@ -1,46 +1,38 @@
 package org.service.classe_matiere_personnel.model;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
-
 import org.service.classe_matiere_personnel.enumeration.TypeMatiere;
 
-import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
-public class Matiere extends PanacheEntityBase {
+//@JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "les_classes"})
+public class Matiere {
     
     @Id
-    private String codeMatiere;
-    private short coefficient;
-    private String intituleMatiere;
-    private short semestre;
-    private TypeMatiere typeMatiere;
-    private String email;
+    public String codeMatiere;
+    public short coefficient;
+    public String intituleMatiere;
+    public short semestre;
+    public TypeMatiere typeMatiere;
 
-   /*  @OneToMany(mappedBy="matiere")
-    private List<AssociationTeacherMatiere> associationMatiere = new ArrayList<AssociationTeacherMatiere>();
- */
+    public Matiere( ){}
 
-    @ManyToMany(mappedBy = "lesMatieresPourTeacher")
-    Set<Teacher> lesTeacher;
+    // @ManyToMany(fetch = FetchType.EAGER)
+    // @JoinTable( name = "dispenser", joinColumns = @JoinColumn(name = "matiere_id"), inverseJoinColumns = @JoinColumn(name = "classe_id"))
+    // public List<Classe> les_classes = new ArrayList<>();
 
-    @ManyToMany(mappedBy = "lesMatieresPourClasse") 
-    Set<Classe> lesClasse;
-
-    public void addTeacher( Teacher teacher ){
-        lesTeacher.add(teacher);
-    }
-
-    public void removeTeacher( Teacher teacher ){
-        if( !lesTeacher.isEmpty() ){
-            lesTeacher.remove(teacher);
-        }
-    }
-}
+     @ManyToMany( fetch = FetchType.EAGER)
+     @JoinTable( name = "enseignement", joinColumns = @JoinColumn(name = "enseignement_matiere_id"), inverseJoinColumns = @JoinColumn(name = "enseignement_teacher_id"))
+     public Set<Enseignant> les_teachers = new HashSet<>();
+ }

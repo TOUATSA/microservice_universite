@@ -1,41 +1,51 @@
 package org.service.classe_matiere_personnel.model;
 
-import java.util.HashSet;
-import java.util.Set;
-
+import java.util.ArrayList;
+import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToOne;
 
 import org.service.classe_matiere_personnel.enumeration.TypeParcours;
 
-import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
-public class Classe extends PanacheEntityBase {
-    
+//@JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "my_matieres"})
+public class Classe {
+
     @Id
-    private String codeClasse;
-    private String filiere;
-    private String niveau;
-   // private String codeClasse;
-    private TypeParcours typeParcours;
+    public String codeClasse;
+    public String filiere; 
+    public String niveau;
+    // private String codeClasse;
+    @Enumerated( EnumType.STRING )
+    public TypeParcours typeParcours;
 
-    @ManyToMany()
-@JoinTable(name = "dispenser", joinColumns = @JoinColumn(name = "id_classe"),
-              inverseJoinColumns = @JoinColumn(name = "id_matiere_classe"))
-Set<Matiere> lesMatieresPourClasse = new HashSet<Matiere>();
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable( name = "dispenser",joinColumns = @JoinColumn( name = "classe_id" ),inverseJoinColumns = @JoinColumn( name = "matiere_id" ) )
+    private List<Matiere> my_matieres = new ArrayList<>() ;
 
-    public Set<Matiere> getActeurs() {
-        return lesMatieresPourClasse;
+    public Classe(){}
+
+    public List<Matiere> getLesMatieresPourClasse() {
+        return my_matieres;
     }
 
-    public void setActeurs(Set<Matiere> matieres) {
-        this.lesMatieresPourClasse = matieres;
-    } 
+    public void setLesMatieresPourClasse(List<Matiere> matieres) {
+        this.my_matieres = matieres;
+    }
 
-    
+    @OneToOne( fetch = FetchType.EAGER)
+    @JoinColumn(name = "teacher_id")
+    private Enseignant teacher;
+
 
 }

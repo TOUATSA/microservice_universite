@@ -8,9 +8,10 @@ import org.service.classe_matiere_personnel.enumeration.TypeMatiere;
 import org.service.classe_matiere_personnel.model.Matiere;
 
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
+import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
 
 @ApplicationScoped
-public class MatiereRepository implements PanacheRepository<Matiere> {
+public class MatiereRepository implements PanacheRepositoryBase<Matiere, String> {
     
     public Matiere findByName(String name){
         return find("name", name).firstResult();
